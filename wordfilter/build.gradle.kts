@@ -3,6 +3,7 @@
 plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
+    `maven-publish`
 }
 
 android {
@@ -21,8 +22,7 @@ android {
     }
 
     publishing {
-        singleVariant("release") {
-        }
+        singleVariant("release")
     }
 
     buildTypes {
@@ -42,4 +42,25 @@ android {
 
 dependencies {
     testImplementation("junit:junit:4.13.2")
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            register("releaseLibrary", MavenPublication::class) {
+                groupId = "com.mediamonks.wordfilter"
+                version = "1.0.0"
+
+                afterEvaluate {
+                    from(components["release"])
+                }
+            }
+        }
+
+        // Repositories *to* which Gradle can publish artifacts
+        repositories {
+            maven {
+            }
+        }
+    }
 }
